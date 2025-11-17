@@ -1,0 +1,49 @@
+{
+  "family": "loan-default-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "containerDefinitions": [
+    {
+      "name": "loan-default-api",
+      "image": "<account-id>.dkr.ecr.us-east-1.amazonaws.com/loan-default:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "PYTHONPATH",
+          "value": "/app"
+        },
+        {
+          "name": "MLFLOW_TRACKING_URI",
+          "value": "sqlite:///mlruns.db"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/loan-default",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:8080/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 60
+      }
+    }
+  ]
+}
+

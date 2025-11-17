@@ -1,0 +1,103 @@
+# Main configuration file for Loan Default Prediction Pipeline
+
+# Data Configuration
+data:
+  train_path: "C:/Users/ASUS/Desktop/Dataset"  # Will auto-detect CSV file
+  test_path: "data/test.csv"
+  raw_data_path: "C:/Users/ASUS/Desktop/Dataset"  # Will auto-detect CSV file
+  processed_data_path: "data/processed"
+  target_column: "Default"
+  id_column: "ID"
+  
+# Preprocessing Configuration
+preprocessing:
+  handle_missing_values: true
+  handle_outliers: true
+  outlier_method: "cap"  # Options: cap, remove, ignore
+  encode_categorical: true
+  scale_features: true
+  scaler_type: "robust"  # Options: standard, robust, minmax
+  
+# Feature Engineering
+feature_engineering:
+  enabled: true
+  create_ratio_features: true
+  create_interaction_features: false
+  create_polynomial_features: false
+  
+# Model Configuration
+model:
+  random_state: 42
+  test_size: 0.2
+  validation_size: 0.1
+  handle_imbalance: true
+  imbalance_method: "smote"  # Options: smote, undersample, combined, none
+  
+# Training Configuration
+training:
+  models:
+    - "Logistic Regression"
+    - "Random Forest"
+    - "Gradient Boosting"
+    - "XGBoost"
+    - "LightGBM"
+  cv_folds: 5
+  scoring_metric: "roc_auc"
+  
+# MLflow Configuration
+mlflow:
+  enabled: true
+  tracking_uri: "sqlite:///mlruns.db"
+  experiment_name: "loan_default_prediction"
+  log_artifacts: true
+  log_models: true
+  
+# DVC Configuration
+dvc:
+  enabled: true
+  remote: "s3://your-bucket/dvc-storage"
+  data_dir: "data"
+  
+# Model Registry
+model_registry:
+  enabled: true
+  registry_path: "models"
+  best_model_name: "best_model.pkl"
+  preprocessor_name: "preprocessor.pkl"
+  
+# Monitoring Configuration
+monitoring:
+  enabled: true
+  reference_data_path: "data/train.csv"
+  drift_detection:
+    enabled: true
+    threshold: 0.05
+    method: "ks_test"  # Options: ks_test, psi, mmd
+  performance_monitoring:
+    enabled: true
+    metrics: ["accuracy", "precision", "recall", "f1", "roc_auc"]
+    alert_thresholds:
+      accuracy: 0.7
+      precision: 0.6
+      recall: 0.5
+      f1: 0.6
+      roc_auc: 0.7
+  
+# Deployment Configuration
+deployment:
+  docker:
+    image_name: "loan-default-predictor"
+    port: 8080
+  aws:
+    region: "us-east-1"
+    ecr_repository: "loan-default"
+    ecs_cluster: "loan-default-cluster"
+    ecs_service: "loan-default-service"
+    task_definition: "loan-default-task"
+    
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/pipeline.log"
+

@@ -1,0 +1,5 @@
+['remote "storage"']
+url = s3://your-bucket/dvc-storage
+endpointurl = 
+['remote "storage"']
+region = us-east-1

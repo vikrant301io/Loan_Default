@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    container_name: loan-default-api
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../models:/app/models
+      - ../logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+      - MLFLOW_TRACKING_URI=sqlite:///mlruns.db
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  mlflow:
+    image: python:3.9-slim
+    container_name: loan-default-mlflow
+    working_dir: /app
+    command: >
+      sh -c "pip install mlflow && 
+             mlflow ui --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlruns.db"
+    ports:
+      - "5000:5000"
+    volumes:
+      - ../mlruns:/app/mlruns
+      - ../mlruns.db:/app/mlruns.db
+    restart: unless-stopped

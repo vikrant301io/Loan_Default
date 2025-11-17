@@ -1,0 +1,23 @@
+# DVC ignore file
+*.pyc
+__pycache__/
+*.pkl
+*.joblib
+*.log
+*.csv
+!data/raw/*.csv
+!data/processed/*.csv
+.env
+.venv
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.DS_Store
+*.swp
+*.swo
+*~
